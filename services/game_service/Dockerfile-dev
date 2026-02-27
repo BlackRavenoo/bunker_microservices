@@ -1,0 +1,14 @@
+FROM python:3.13-slim
+COPY --from=docker.io/astral/uv:latest /uv /uvx /bin/
+
+WORKDIR /app
+
+COPY pyproject.toml /app/
+
+COPY services/game_service/pyproject.toml /app/services/game_service/pyproject.toml
+
+COPY shared/pyproject.toml /app/shared/pyproject.toml
+
+RUN uv sync --package=game_service
+
+CMD ["uv", "run", "uvicorn", "services.game_service.app.main:create_app", "--factory", "--host", "0.0.0.0", "--port", "8000", "--reload"]

@@ -1,0 +1,27 @@
+[project]
+name = "game-service"
+version = "0.1.0"
+description = "Main service for all game logic"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "asyncpg>=0.30.0",
+    "dependency-injector>=4.48.2",
+    "fastapi>=0.120.4",
+    "faststream[rabbit]>=0.6.2",
+    "nanoid>=2.0.0",
+    "pydantic-settings>=2.11.0",
+    "sentry-sdk[fastapi]>=2.43.0",
+    "sqlalchemy>=2.0.44",
+    "alembic>=1.17.1",
+    "shared",
+    "uvicorn>=0.38.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.0",
+    "pytest-cov>=7.0.0",
+    "pytest-asyncio>=0.25.0",
+    "httpx>=0.28.0",
+]

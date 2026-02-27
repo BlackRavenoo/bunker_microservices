@@ -1,0 +1,9 @@
+[project]
+name = "shared"
+version = "0.1.0"
+description = "Shared lib for bunker microservices"
+requires-python = ">=3.13"
+dependencies = [
+    "aiohttp>=3.12.15",
+    "msgspec>=0.19.0",
+]

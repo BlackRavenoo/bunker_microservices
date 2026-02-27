@@ -1,0 +1,1 @@
+GAME_EXCHANGE_NAME = "bunker.events"

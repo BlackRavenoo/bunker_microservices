@@ -1,0 +1,14 @@
+FROM python:3.13-slim
+COPY --from=docker.io/astral/uv:latest /uv /uvx /bin/
+
+WORKDIR /app
+
+COPY pyproject.toml /app/
+
+COPY services/tg_bot/pyproject.toml /app/services/tg_bot/pyproject.toml
+
+COPY shared/pyproject.toml /app/shared/pyproject.toml
+
+RUN uv sync --package=tg_bot && uv add watchfiles
+
+CMD ["uv", "run", "watchfiles", "uv run -m services.tg_bot.app.main", "."]

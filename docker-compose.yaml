@@ -1,0 +1,86 @@
+services:
+  game_service:
+    build:
+      context: .
+      dockerfile: services/game_service/Dockerfile-dev
+    environment:
+      - GAME_START_TIMEOUT_SECONDS=600
+      - DATABASE_URL=postgresql+asyncpg://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@postgres:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-game_service}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-user}:${RABBITMQ_PASSWORD:-password}@rabbitmq:5672
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./services/game_service/app:/app/services/game_service/app:ro
+      - ./shared/src:/app/shared/src
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+
+  tg_bot:
+    build:
+      context: .
+      dockerfile: services/tg_bot/Dockerfile-dev
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - RABBITMQ_URL=amqp://${RABBITMQ_USER:-user}:${RABBITMQ_PASSWORD:-password}@rabbitmq:5672
+      - MONGO_URI=mongodb://${MONGO_DB_USERNAME:-user}:${MONGO_DB_PASSWORD:-password}@mongo:27017/${MONGO_DB:-telegram_bot}?authSource=admin
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./services/tg_bot/app:/app/services/tg_bot/app:ro
+      - ./shared/src:/app/shared/src
+    depends_on:
+      - game_service
+
+  rabbitmq:
+    image: rabbitmq:4.1.5-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER:-user}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD:-password}
+    ports:
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 5s
+
+  postgres:
+    image: postgres:18
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-game_service}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
+      - POSTGRES_INITDB_ARGS="-c max_connections=1000"
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql
+  
+  mongo:
+    image: mongo:8.2
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_DB_USERNAME:-user}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_DB_PASSWORD:-password}
+      - MONGO_INITDB_DATABASE=${MONGO_DB:-telegram_bot}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  mongo-express:
+    image: mongo-express:latest
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=${MONGO_DB_USERNAME:-user}
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=${MONGO_DB_PASSWORD:-password}
+      - ME_CONFIG_MONGODB_URL=mongodb://${MONGO_DB_USERNAME:-user}:${MONGO_DB_PASSWORD:-password}@mongo:27017/
+      - ME_CONFIG_BASICAUTH=false
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mongo
+
+volumes:
+  pg_data:
+  mongo_data:

@@ -1,0 +1,15 @@
+[project]
+name = "tg-bot"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "aiogram==3.22",
+    "fastapi>=0.120.4",
+    "faststream[rabbit]>=0.6.2",
+    "pydantic-settings>=2.11.0",
+    "pymongo[srv]>=4.15.4",
+    "shared",
+    "uvicorn>=0.38.0",
+]

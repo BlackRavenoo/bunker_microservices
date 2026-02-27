@@ -1,0 +1,206 @@
+category,value
+HEALTH,Полностью здоров
+HEALTH,ВИЧ
+HEALTH,Авитаминоз
+HEALTH,Астма
+HEALTH,Бессонница
+HEALTH,Биполярное расстройство
+HEALTH,Болезнь Альцгеймера
+HEALTH,Ветрянка
+HEALTH,Гастрит
+HEALTH,Гемофилия
+HEALTH,Гепатит B
+HEALTH,Глаукома
+HEALTH,Глухота
+HEALTH,Дальтонизм
+HEALTH,Депрессия
+HEALTH,Диарея
+HEALTH,Заикание
+HEALTH,Мигрень
+HEALTH,Мочекаменная болезнь
+HEALTH,Остеохондроз
+HEALTH,Отсутствие ноги
+HEALTH,Отсутствие руки
+HEALTH,Паранойя
+HEALTH,Пневмония
+HEALTH,Простуда
+HEALTH,Псориаз
+HEALTH,Птичий грипп
+HEALTH,Сахарный диабет
+HEALTH,Синдром Туретта
+HEALTH,Слепота
+HEALTH,Туберкулёз
+HEALTH,Умственная отсталость
+HEALTH,Цинга
+HEALTH,Шизофрения
+HEALTH,Эпилепсия
+HEALTH,Язва желудка
+HEALTH,Рак крови
+PROFESSION,Автомеханик
+PROFESSION,Агент ФБР
+PROFESSION,Агроном
+PROFESSION,Адвокат
+PROFESSION,Актер
+PROFESSION,Акушер
+PROFESSION,Андролог
+PROFESSION,Альпинист
+PROFESSION,Археолог
+PROFESSION,Архитектор
+PROFESSION,Астролог
+PROFESSION,Астронавт
+PROFESSION,Бариста
+PROFESSION,Бармен
+PROFESSION,Библиотекарь
+PROFESSION,Биолог
+PROFESSION,Биохимик
+PROFESSION,Блогер
+PROFESSION,Боксёр
+PROFESSION,Булочник
+PROFESSION,Браконьер
+PROFESSION,Бухгалтер
+PROFESSION,Венеролог
+PROFESSION,Ветеринар
+PROFESSION,Винодел
+PROFESSION,Вирусолог
+PROFESSION,Военнослужащий
+PROFESSION,Военный врач
+PROFESSION,Воспитатель
+PROFESSION,Вышибала
+PROFESSION,Генетик
+PROFESSION,Грузчик
+PROFESSION,Дерматолог
+PROFESSION,Депутат
+PROFESSION,Детектив
+PROFESSION,Диджей
+PROFESSION,Дизайнер
+PROFESSION,Директор
+PROFESSION,Доктор
+PROFESSION,Дровосек
+PROFESSION,Егерь
+PROFESSION,Журналист
+PROFESSION,Животновод
+PROFESSION,Завуч школы
+PROFESSION,Изобретатель
+PROFESSION,Иллюстратор
+PROFESSION,Иммунолог
+PROFESSION,Инженер
+PROFESSION,Инкассатор
+PROFESSION,Историк
+PROFESSION,Инструктор по выживанию
+PROFESSION,Инфекционист
+PROFESSION,Кальянщик
+PROFESSION,Картограф
+PROFESSION,Кардиолог
+PROFESSION,Каскадёр
+PROFESSION,Кассир
+PROFESSION,Киллер
+PROFESSION,Кинолог
+PROFESSION,Клоун
+PROFESSION,Композитор
+PROFESSION,Кондитер
+PROFESSION,Консультант
+PROFESSION,Косметолог
+PROFESSION,Кузнец
+PROFESSION,Криминалист
+PROFESSION,Критик
+PROFESSION,Лифтёр
+PROFESSION,Маркетолог
+PROFESSION,Машинист
+PROFESSION,Модель
+PROFESSION,Мясник
+PROFESSION,Окулист
+PROFESSION,Онколог
+PROFESSION,Официант
+PROFESSION,Охранник
+PROFESSION,Парикмахер
+PROFESSION,Пастух
+PROFESSION,Патологоанатом
+PROFESSION,Певец
+PROFESSION,Переводчик
+PROFESSION,Пилот
+PROFESSION,Писатель
+PROFESSION,Плотник
+PROFESSION,Повар
+PROFESSION,Пожарный
+PROFESSION,Политолог
+PROFESSION,Полицейский
+PROFESSION,Порноактер
+PROFESSION,Портной
+PROFESSION,Почтальон
+PROFESSION,Президент
+PROFESSION,Программист
+PROFESSION,Продавец мороженого
+PROFESSION,Прокурор
+PROFESSION,Психотерапевт
+PROFESSION,Радист
+PROFESSION,Разнорабочий
+PROFESSION,Редактор
+PROFESSION,Режиссёр
+PROFESSION,Рыбак
+PROFESSION,Садовник
+PROFESSION,Сантехник
+PROFESSION,Сварщик
+PROFESSION,Священник
+PROFESSION,Секретарь
+PROFESSION,Сексолог
+PROFESSION,Скульптор
+PROFESSION,Слесарь
+PROFESSION,Социолог
+PROFESSION,Спасатель
+PROFESSION,Стоматолог
+PROFESSION,Стример
+PROFESSION,Строитель
+PROFESSION,Судебно-медицинский эксперт
+PROFESSION,Судья
+PROFESSION,Татуировщик
+PROFESSION,Телеведущий
+PROFESSION,Телохранитель
+PROFESSION,Тренер по физической культуре
+PROFESSION,Уборщик
+PROFESSION,Учёный
+PROFESSION,Фармацевт
+PROFESSION,Фельдшер
+PROFESSION,Фермер
+PROFESSION,Физик-ядерщик
+PROFESSION,Физик
+PROFESSION,Философ
+PROFESSION,Фотограф
+PROFESSION,Футболист
+PROFESSION,Химик
+PROFESSION,Хирург
+PROFESSION,Художник
+PROFESSION,Шахтёр
+PROFESSION,Эколог
+PROFESSION,Электрик
+PROFESSION,Юрист
+PROFESSION,Психолог
+PROFESSION,Продавец оружия
+PROFESSION,Гинеколог
+PROFESSION,Уролог
+PROFESSION,Дипломат
+PROFESSION,Разносчик пиццы
+HOBBY,Тест1
+HOBBY,Тест2
+HOBBY,Тест3
+HOBBY,Тест4
+HOBBY,Тест5
+PHOBIA,Тест1
+PHOBIA,Тест2
+PHOBIA,Тест3
+PHOBIA,Тест4
+PHOBIA,Тест5
+FACT,Тест1
+FACT,Тест2
+FACT,Тест3
+FACT,Тест4
+FACT,Тест5
+FACT,Тест6
+FACT,Тест7
+FACT,Тест8
+FACT,Тест9
+FACT,Тест10
+ITEM,Тест1
+ITEM,Тест2
+ITEM,Тест3
+ITEM,Тест4
+ITEM,Тест5
