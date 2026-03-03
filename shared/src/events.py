@@ -4,7 +4,6 @@ from shared.src.enums import AttributeCategory, Gender, VotingResult
 
 PLAYER_JOINED = "player.joined"
 GAME_STARTED = "game.started"
-GAME_ENDED = "game.ended"
 ATTRIBUTE_REVEALED = "attribute.revealed"
 VOTING_STARTED = "voting.started"
 PLAYER_VOTED = "player.voted"
@@ -66,9 +65,6 @@ class GameStarted(GameEvent, kw_only=True, omit_defaults=True):
     event_type: str = GAME_STARTED
     game: Game
 
-class GameEnded(GameEvent, kw_only=True, omit_defaults=True):
-    event_type: str = GAME_ENDED
-
 class AttributeRevealed[T](GameEvent, kw_only=True, omit_defaults=True):
     event_type: str = ATTRIBUTE_REVEALED
     user_id: str
@@ -94,6 +90,8 @@ class VotingEnded(GameEvent, kw_only=True, omit_defaults=True):
     candidates_for_kick: list[VoteDetail]
     remaining_members: list[VoteDetail]
     voting_result: VotingResult
+    game_ended: bool
+    count_to_kick: int | None = None
 
 class NewRoundStarted(GameEvent, kw_only=True, omit_defaults=True):
     event_type: str = ROUND_STARTED

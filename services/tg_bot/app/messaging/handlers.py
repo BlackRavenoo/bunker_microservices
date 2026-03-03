@@ -2,13 +2,13 @@ from aiogram import Bot
 from faststream import AckPolicy
 from faststream.rabbit import RabbitBroker, RabbitQueue
 
-from services.tg_bot.app.keyboards import reveal_menu, start_voting_menu, voting_keyboard
+from services.tg_bot.app.keyboards import reveal_menu, revote_decision_keyboard, start_voting_menu, tie_decision_keyboard, voting_keyboard
 from services.tg_bot.app.messaging.broker import exchange
 from services.tg_bot.app.schema import VotingCandidate
 from services.tg_bot.app.services.game import GameService
-from services.tg_bot.app.utils import format_candidates_list, get_category_str, get_formatted_name, get_year_str, is_user_from_tg
+from services.tg_bot.app.utils import format_candidates_list, get_category_str, get_formatted_name, get_new_round_message, get_year_str, is_user_from_tg
 from shared.src.enums import Gender, VotingResult
-from shared.src.events import ATTRIBUTE_REVEALED, GAME_ENDED, GAME_STARTED, PLAYER_JOINED, PLAYER_VOTED, ROUND_STARTED, VOTING_ENDED, VOTING_STARTED, AttributeRevealed, GameEnded, GameStarted, NewRoundStarted, PlayerJoined, PlayerVoted, VotingEnded, VotingStarted
+from shared.src.events import ATTRIBUTE_REVEALED, GAME_STARTED, PLAYER_JOINED, PLAYER_VOTED, ROUND_STARTED, VOTING_ENDED, VOTING_STARTED, AttributeRevealed, GameStarted, NewRoundStarted, PlayerJoined, PlayerVoted, VotingEnded, VotingStarted
 
 def register_event_handlers(broker: RabbitBroker, bot: Bot, game_service: GameService):
     @broker.subscriber(
@@ -310,6 +310,11 @@ def register_event_handlers(broker: RabbitBroker, bot: Bot, game_service: GameSe
                     user_id=candidate.user_id,
                     name=candidate.name
                 )
+
+                new_candidates_for_kick = event.remaining_members[:]
+
+                for candidate in new_candidates_for_kick:
+                    candidate.votes_count = 0
                 
                 message = await bot.send_message(
                     chat_id=game.chat_id,
@@ -330,14 +335,20 @@ def register_event_handlers(broker: RabbitBroker, bot: Bot, game_service: GameSe
                     chat_id=game.chat_id,
                     text="Есть игроки, имеющие равное количество голосов.\n"
                         "Вы можете кикнуть их сразу, провести новое голосование "
-                        "среди них или пропустить его.\n"
+                        "среди них или пропустить его.\n",
+                    reply_markup=tie_decision_keyboard(
+                        game_id=game.game_id
+                    )
                 )
             case VotingResult.REVOTE_DECISION:
                 await bot.send_message(
                     chat_id=game.chat_id,
                     text="Есть игроки, имеющие равное количество голосов.\n"
                         "Вы можете провести новое голосование "
-                        "среди них или пропустить его.\n"
+                        "среди них или пропустить его.\n",
+                    reply_markup=revote_decision_keyboard(
+                        game_id=game.game_id
+                    )
                 )
             case VotingResult.REVOTE:
                 message = await bot.send_message(
@@ -354,6 +365,17 @@ def register_event_handlers(broker: RabbitBroker, bot: Bot, game_service: GameSe
                     chat_id=game.chat_id,
                     message_id=message.message_id
                 )
+
+        if event.game_ended:
+            await bot.send_message(
+                chat_id=game.chat_id,
+                text="Игра закончена"
+            )
+        elif event.count_to_kick:
+            await bot.send_message(
+                chat_id=game.chat_id,
+                text=get_new_round_message(event.count_to_kick)
+            )
         
         await bot.delete_message(
             chat_id=game.chat_id,
@@ -377,30 +399,5 @@ def register_event_handlers(broker: RabbitBroker, bot: Bot, game_service: GameSe
         
         await bot.send_message(
             chat_id=game.chat_id,
-            text=f"Начался новый раунд. В нем необходимо кикнуть {event.count_to_kick} игрока."
-                "Можете начать вскрывать характеристики."
-        )
-
-    @broker.subscriber(
-        RabbitQueue(GAME_ENDED, durable=True),
-        exchange,
-        ack_policy=AckPolicy.NACK_ON_ERROR
-    )
-    async def game_ended(
-        event: GameEnded
-    ):
-        game = await game_service.get_game(
-            game_id=event.game_id
-        )
-
-        if not game:
-            return
-        
-        await bot.send_message(
-            chat_id=game.chat_id,
-            text="Игра закончена."
-        )
-
-        await game_service.delete_game(
-            game_id=game.game_id
+            text=get_new_round_message(event.count_to_kick)
         )

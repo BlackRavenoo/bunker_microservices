@@ -4,7 +4,7 @@ from services.game_service.app.domain.services.voting import calculate_voting_re
 from services.game_service.app.domain.uow import UnitOfWork
 from services.game_service.app.infrastructure.messaging.rabbitmq import GamePublisher
 from shared.src.enums import CharacterStatus, GameStatus, VotingResult
-from shared.src.events import GameEnded, NewRoundStarted, PlayerVoted, VotingEnded, VotingStarted
+from shared.src.events import NewRoundStarted, PlayerVoted, VotingEnded, VotingStarted
 from shared.src.exceptions import InvalidVotingStateError, UserAlreadyKicked, UserAlreadyVoted, UserIsNotPlayer, VotingTargetNotFound
 
 class VotingService:
@@ -185,19 +185,11 @@ class VotingService:
                 game_id=game_id,
                 candidates_for_kick=[c.into_shared() for c in calc_res.candidates_to_kick],
                 remaining_members=[c.into_shared() for c in calc_res.remaining_members],
-                voting_result=calc_res.result
+                voting_result=calc_res.result,
+                game_ended=calc_res.result == VotingResult.KICK\
+                    and len(calc_res.remaining_members) <= metadata.places_count,
+                count_to_kick=1
             ))
-
-            if calc_res.result == VotingResult.KICK:
-                if len(calc_res.remaining_members) <= metadata.places_count:
-                    await self.publisher.publish(GameEnded(
-                        game_id=game_id,
-                    ))
-                else:
-                    await self.publisher.publish(NewRoundStarted(
-                        game_id=game_id,
-                        count_to_kick=1
-                    ))
 
     async def skip_voting(self, game_id: str):
         async with self.uow as uow:

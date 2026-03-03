@@ -41,3 +41,7 @@ def format_candidates_list(candidates: list[VoteDetail]) -> str:
             name=candidate.name
         ) for candidate in candidates
     )
+
+def get_new_round_message(count_to_kick: int) -> str:
+    return f"Начался новый раунд. В нем необходимо кикнуть {count_to_kick} игрока. \n"\
+            "Можете начать вскрывать характеристики."
