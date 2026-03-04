@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status
 
 from services.game_service.app.api.deps import GameServiceDep, VotingServiceDep
-from shared.src.enums import TieDecisionAction
+from shared.src.enums import MakeDecisionAction
 from shared.src.schemas.game import GameCreateResponse, GameSchemaAdd, GameSchemaMakeDecision
 
 router = APIRouter(prefix="/games", tags=["games"])
@@ -51,13 +51,15 @@ async def skip_voting(
     service: VotingServiceDep
 ):
     match schema.action:
-        case TieDecisionAction.SKIP:
+        case MakeDecisionAction.SKIP:
             await service.skip_voting(
                 game_id=id
             )
-        case TieDecisionAction.KICK_ALL:
-            ...
-        case TieDecisionAction.REVOTE:
+        case MakeDecisionAction.KICK_ALL:
+            await service.kick_all_candidates(
+                game_id=id
+            )
+        case MakeDecisionAction.REVOTE:
             await service.revote(
                 game_id=id
             )

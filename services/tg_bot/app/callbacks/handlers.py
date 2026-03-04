@@ -1,11 +1,11 @@
 from aiogram import F, Router
 from aiogram.types import CallbackQuery
 
-from services.tg_bot.app.callbacks.factory import RevealCallback, StartVotingCallback, VoteCallback, VoteDecisionCallback
+from services.tg_bot.app.callbacks.factory import RevealCallback, StartVotingCallback, VoteCallback, MakeDecisionCallback
 from services.tg_bot.app.consts import HELLO_TEXT
 from services.tg_bot.app.keyboards import UseActionCallback, info_menu, start_menu
 from services.tg_bot.app.services.game import GameService
-from shared.src.exceptions import AttributeAlreadyRevealed, NoRevealRequired, UserAlreadyKicked, UserAlreadyVoted, VotingAlreadyStarted, VotingTargetNotFound
+from shared.src.exceptions import AttributeAlreadyRevealed, InvalidVotingStateError, NoRevealRequired, UserAlreadyKicked, UserAlreadyVoted, VotingAlreadyStarted, VotingTargetNotFound
 
 router = Router()
 
@@ -77,13 +77,16 @@ async def vote(
     except UserAlreadyKicked:
         await callback.answer("Вы уже выгнаны.", show_alert=True)
 
-@router.callback_query(VoteDecisionCallback.filter())
+@router.callback_query(MakeDecisionCallback.filter())
 async def make_decision(
     callback: CallbackQuery,
-    callback_data: VoteDecisionCallback,
+    callback_data: MakeDecisionCallback,
     game_service: GameService,
 ):
     try:
-        await game_service
-    except:
-        ...
+        await game_service.make_decision(
+            game_id=callback_data.game_id,
+            action=callback_data.action
+        )
+    except InvalidVotingStateError:
+        await callback.answer("Ты не сможешь сделать это в данный момент.", show_alert=True)

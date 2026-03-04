@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from shared.src.enums import TieDecisionAction
+from shared.src.enums import MakeDecisionAction
 
 class GameSchemaAdd(BaseModel):
     host_id: str
@@ -15,7 +15,8 @@ class GameSchemaStartVoting(BaseModel):
     game_id: str
 
 class GameSchemaMakeDecision(BaseModel):
-    action: TieDecisionAction
+    game_id: str
+    action: MakeDecisionAction
 
 # Responses
 

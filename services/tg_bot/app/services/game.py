@@ -1,11 +1,11 @@
 from services.tg_bot.app.domain.dto import Game
 from services.tg_bot.app.domain.repositories.game import GameRepository
 from services.tg_bot.app.schema import TelegramUser
-from shared.src.enums import AttributeCategory
+from shared.src.enums import AttributeCategory, MakeDecisionAction
 from shared.src.exceptions import EntityAlreadyExists, EntityNotFound
 from shared.src.game_client import CharacterSchemaReveal, GameClient, GameSchemaStart
 from shared.src.schemas.character import CharacterSchemaAdd, CharacterSchemaVote
-from shared.src.schemas.game import GameSchemaAdd, GameSchemaStartVoting
+from shared.src.schemas.game import GameSchemaAdd, GameSchemaMakeDecision, GameSchemaStartVoting
 
 class GameService:
     def __init__(
@@ -97,6 +97,16 @@ class GameService:
             game_id=game_id,
             user_id=user_id,
             target_user_id=target_id
+        ))
+
+    async def make_decision(
+        self,
+        game_id: str,
+        action: MakeDecisionAction
+    ):
+        await self.game_client.make_decision(GameSchemaMakeDecision(
+            game_id=game_id,
+            action=action
         ))
 
     async def get_game(self, game_id: str) -> Game | None:

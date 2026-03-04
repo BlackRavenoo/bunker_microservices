@@ -74,7 +74,7 @@ class VotingResult(Enum):
     KICK_AND_REVOTE = 3 # Kick and revote to kick another
     REVOTE = 4          # Revote to kick another
 
-class TieDecisionAction(Enum):
+class MakeDecisionAction(Enum):
     SKIP = 0
     KICK_ALL = 1
     REVOTE = 2

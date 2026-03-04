@@ -1,6 +1,6 @@
 from aiogram.filters.callback_data import CallbackData
 
-from shared.src.enums import AttributeCategory, VotingResult
+from shared.src.enums import AttributeCategory, MakeDecisionAction
 
 class RevealCallback(CallbackData, prefix="reveal"):
     game_id: str
@@ -22,6 +22,6 @@ class EndVotingCallback(CallbackData, prefix="end_voting"):
 class StartVotingCallback(CallbackData, prefix="start_voting"):
     game_id: str
 
-class VoteDecisionCallback(CallbackData, prefix="decision"):
+class MakeDecisionCallback(CallbackData, prefix="decision"):
     game_id: str
-    decision: VotingResult
+    action: MakeDecisionAction

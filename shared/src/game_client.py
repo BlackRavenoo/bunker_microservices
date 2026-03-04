@@ -5,7 +5,7 @@ from msgspec.json import Decoder
 
 from shared.src.exceptions import build_error_code_map
 from shared.src.schemas.character import CharacterSchemaAdd, CharacterSchemaReveal, CharacterSchemaVote
-from shared.src.schemas.game import GameCreateResponse, GameSchemaAdd, GameSchemaStart, GameSchemaStartVoting
+from shared.src.schemas.game import GameCreateResponse, GameSchemaAdd, GameSchemaMakeDecision, GameSchemaStart, GameSchemaStartVoting
 
 ERROR_CODE_MAP = build_error_code_map()
 
@@ -56,6 +56,13 @@ class GameClient:
         async with self.session.post("/v1/characters/vote", json=schema.model_dump()) as resp:
             await self._raise_for_error(resp)
     
+    async def make_decision(self, schema: GameSchemaMakeDecision):
+        async with self.session.post(
+            f"/v1/games/{schema.game_id}/voting/make_decision",
+            json=schema.model_dump(exclude={"game_id"})
+        ) as resp:
+            await self._raise_for_error(resp)
+
     async def _raise_for_error(self, resp: ClientResponse):
         if resp.status < 400:
             return
