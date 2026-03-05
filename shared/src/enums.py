@@ -41,9 +41,7 @@ class ActionType(Enum):
     CHANGE = 0
     STEAL = 1
     REVEAL = 2
-    EXCHANGE = 3
-    INFO = 4
-    CHANGE_SLOTS = 5
+    INFO = 3
 
 class ActionValue(Enum):
     BIOLOGY = "biology"
@@ -51,21 +49,15 @@ class ActionValue(Enum):
     PROFESSION = "profession"
     HOBBY = "hobby"
     PHOBIA = "phobia"
-    FACT = "fact"
     ITEM = "item"
-    ANY = "any"
-    BUNKER = "bunker"
     CATASTROPHE = "catastrophe"
     TEXT = "text"
-    ADD_SLOT = "add_slot"
-    REMOVE_SLOT = "remove_slot"
 
 class ActionTarget(Enum):
     ANY = 0
     ALL = 1
-    SELF = 2
-    NOT_SELF = 3
-    NONE = 4
+    NOT_SELF = 2
+    NONE = 3
 
 class VotingResult(Enum):
     KICK = 0            # Character(s) kicked

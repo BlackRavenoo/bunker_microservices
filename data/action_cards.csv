@@ -4,12 +4,37 @@ CHANGE,HEALTH,ANY,
 CHANGE,PROFESSION,ANY,
 CHANGE,HOBBY,ANY,
 CHANGE,PHOBIA,ANY,
-CHANGE,FACT,ANY,
 CHANGE,ITEM,ANY,
+CHANGE,CATASTROPHE,NONE
 CHANGE,BIOLOGY,ALL,
 CHANGE,HEALTH,ALL,
 CHANGE,PROFESSION,ALL,
 CHANGE,HOBBY,ALL,
 CHANGE,PHOBIA,ALL,
-CHANGE,FACT,ALL,
 CHANGE,ITEM,ALL,
+STEAL,BIOLOGY,NOT_SELF,
+STEAL,HEALTH,NOT_SELF,
+STEAL,PROFESSION,NOT_SELF,
+STEAL,HOBBY,NOT_SELF,
+STEAL,PHOBIA,NOT_SELF,
+STEAL,ITEM,NOT_SELF,
+REVEAL,BIOLOGY,ANY,
+REVEAL,HEALTH,ANY,
+REVEAL,PROFESSION,ANY,
+REVEAL,HOBBY,ANY,
+REVEAL,PHOBIA,ANY,
+REVEAL,ITEM,ANY,
+INFO,TEXT,NONE,Ваш бункер находится около пресного озера.
+INFO,TEXT,NONE,Около вашего бункера находится склад с оружием.
+INFO,TEXT,NONE,Ваш бункер находится под парком аттракционов.
+INFO,TEXT,NONE,Ваш бункер находится в лесу.
+INFO,TEXT,NONE,Ваш бункер находится около бункера который настроен негативно.
+INFO,TEXT,NONE,Ваш бункер находится рядом с заброшенным медицинским центром.
+INFO,TEXT,NONE,В 20 метрах от вашего бункера сохранился погреб с вином.
+INFO,TEXT,NONE,Все узнают что поблизости стоит водоочистное сооружение.
+INFO,TEXT,NONE,Все узнают  что рядом есть электростанция.
+INFO,TEXT,NONE,Все узнают что рядом находится заброшенный склад с оружием.
+INFO,TEXT,NONE,Ваш бункер находится на военной базе.
+INFO,TEXT,NONE,Ваш бункер находится на необитаемом острове.
+INFO,TEXT,NONE,Ваш бункер находится в горах.
+INFO,TEXT,NONE,Около вашего бункера есть горячие источники.

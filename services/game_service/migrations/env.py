@@ -13,8 +13,6 @@ from alembic import context
 service_path = Path(__file__).resolve().parents[3]
 sys.path.append(str(service_path))
 
-print(service_path)
-
 workspace_root = service_path.parent.parent
 shared_path = workspace_root / "shared"
 sys.path.append(str(shared_path))

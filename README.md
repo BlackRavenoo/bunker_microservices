@@ -12,9 +12,9 @@
 # Запуск
 
 ```sh
-docker compose up -d --build
+bash init.sh
 # Data seeding (optional)
-python -m services.game_service.seed
+python -m seed
 ```
 
 ## Переменные окружения

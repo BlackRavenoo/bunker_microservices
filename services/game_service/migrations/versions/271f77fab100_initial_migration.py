@@ -24,8 +24,8 @@ def upgrade() -> None:
     op.create_table('action_cards',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('action', sa.Enum('CHANGE', 'STEAL', 'REVEAL', 'EXCHANGE', 'INFO', 'CHANGE_SLOTS', name='actiontype'), nullable=False),
-    sa.Column('value', sa.Enum('BIOLOGY', 'HEALTH', 'PROFESSION', 'HOBBY', 'PHOBIA', 'FACT', 'ITEM', 'ANY', 'BUNKER', 'CATASTROPHE', 'TEXT', 'ADD_SLOT', 'REMOVE_SLOT', name='actionvalue'), nullable=False),
-    sa.Column('target', sa.Enum('ANY', 'ALL', 'SELF', 'NOT_SELF', 'NONE', name='actiontarget'), nullable=False),
+    sa.Column('value', sa.Enum('BIOLOGY', 'HEALTH', 'PROFESSION', 'HOBBY', 'PHOBIA', 'ITEM', 'CATASTROPHE', 'TEXT', name='actionvalue'), nullable=False),
+    sa.Column('target', sa.Enum('ANY', 'ALL', 'NOT_SELF', 'NONE', name='actiontarget'), nullable=False),
     sa.Column('info', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('action', 'value', 'info', 'target', name='_action_value_info_target_uc')
