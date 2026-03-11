@@ -47,8 +47,8 @@ class SQLCharacterRepository(CharacterRepository):
                 profession=UserAttributeDTO(**row.attributes["profession"]),
                 hobby=UserAttributeDTO(**row.attributes["hobby"]),
                 phobia=UserAttributeDTO(**row.attributes["phobia"]),
+                item=UserAttributeDTO(**row.attributes["item"]),
                 facts=[UserAttributeDTO(**fact) for fact in row.attributes["facts"]],
-                items=[UserAttributeDTO(**item) for item in row.attributes["items"]],
             )
 
             characters_data.append(char)

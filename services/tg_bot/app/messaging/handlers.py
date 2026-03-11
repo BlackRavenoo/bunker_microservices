@@ -59,7 +59,7 @@ def register_event_handlers(broker: RabbitBroker, bot: Bot, game_service: GameSe
                         f"😨 Фобия: {char.phobia.value}\n" \
                         f"📝 Факт 1: {char.facts[0].value}\n" \
                         f"📝 Факт 2: {char.facts[1].value}\n" \
-                        f"🎒 Багаж: {char.items[0].value}\n\n",
+                        f"🎒 Багаж: {char.item.value}\n\n",
                         # f"🃏 Карта действий 1: {char.actions[0].description}\n" \
                         # f"🃏 Карта действий 2: {char.actions[1].description}\n",
                     reply_markup=reveal_menu(game_id=event.game_id)
@@ -157,6 +157,7 @@ def register_event_handlers(broker: RabbitBroker, bot: Bot, game_service: GameSe
                 "Профессия": character.profession,
                 "Хобби": character.hobby,
                 "Фобия": character.phobia,
+                "Багаж": character.item
             }
 
             for name, attr in mappings.items():
@@ -166,11 +167,6 @@ def register_event_handlers(broker: RabbitBroker, bot: Bot, game_service: GameSe
             for i, fact in enumerate(character.facts):
                 if fact.is_revealed:
                     message_part += f"Факт №{i + 1}: {fact.value}\n"
-
-            revealed_items = [item.value for item in character.items if item.is_revealed]
-
-            if len(revealed_items) > 0:
-                message_part += f"Багаж: {", ".join(revealed_items)}"
                 
             message_part += "</code>"
 

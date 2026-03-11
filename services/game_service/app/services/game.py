@@ -29,12 +29,8 @@ class GameService:
                         {"value": attrs[i * 2], "is_revealed": False},
                         {"value": attrs[i * 2 + 1], "is_revealed": False}
                     ]
-                elif category == AttributeCategory.ITEM:
-                    attributes["items"] = [
-                        {"value": attrs[i], "is_revealed": False}
-                    ]
                 else:
-                    attr_name = category.value.lower()
+                    attr_name = category.value
                     attributes[attr_name] = {
                         "value": attrs[i],
                         "is_revealed": False
@@ -44,7 +40,7 @@ class GameService:
             gender = random.choice(["male", "female"])
             
             attributes["biology"] = {"value": (age, gender), "is_revealed": False}
-            
+
             characters_updates.append(CharacterBatchUpdateDTO(
                 id=character_id,
                 attributes=CharacterAttributes(**attributes)

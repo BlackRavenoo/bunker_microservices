@@ -24,8 +24,8 @@ class CharacterDTO(BaseModel):
     profession: UserAttributeDTO[str]
     hobby: UserAttributeDTO[str]
     phobia: UserAttributeDTO[str]
+    item: UserAttributeDTO[str]
     facts: list[UserAttributeDTO[str]]
-    items: list[UserAttributeDTO[str]]
 
     def into_shared(self) -> Character:
         return Character(**self.model_dump(exclude={'id'}))

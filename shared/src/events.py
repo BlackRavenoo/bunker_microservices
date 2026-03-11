@@ -23,8 +23,8 @@ class Character(Struct):
     profession: Attribute[str]
     hobby: Attribute[str]
     phobia: Attribute[str]
+    item: Attribute[str]
     facts: list[Attribute[str]]
-    items: list[Attribute[str]]
     # actions: list[Action]
 
     username: str

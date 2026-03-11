@@ -25,8 +25,8 @@ class CharacterAttributes(BaseModel):
     profession: UserAttributeValue[str]
     hobby: UserAttributeValue[str]
     phobia: UserAttributeValue[str]
+    item: UserAttributeValue[str]
     facts: list[UserAttributeValue[str]]
-    items: list[UserAttributeValue[str]]
 
 class GameUpdateDTO(BaseModel):
     status: GameStatus | None = None
