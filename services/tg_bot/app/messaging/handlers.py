@@ -347,13 +347,23 @@ def register_event_handlers(broker: RabbitBroker, bot: Bot, game_service: GameSe
                     )
                 )
             case VotingResult.REVOTE:
+                candidates = [
+                    VotingCandidate(
+                        name=candidate.name,
+                        user_id=candidate.user_id,
+                        votes_count=0
+                    )
+                    for candidate
+                    in event.candidates_for_kick
+                ]
+
                 message = await bot.send_message(
                     chat_id=game.chat_id,
                     text="По итогам голосования никто не был кикнут.\n"
                         "Будет проведено повторное голосование.",
                     reply_markup=voting_keyboard(
                         game_id=event.game_id,
-                        candidates=event.candidates_for_kick
+                        candidates=candidates
                     )
                 )
 
@@ -367,7 +377,12 @@ def register_event_handlers(broker: RabbitBroker, bot: Bot, game_service: GameSe
                 chat_id=game.chat_id,
                 text="Игра закончена"
             )
-        elif event.count_to_kick:
+
+            await game_service.delete_game(
+                game_id=game.game_id
+            )
+        elif event.count_to_kick\
+            and event.voting_result == VotingResult.KICK:
             await bot.send_message(
                 chat_id=game.chat_id,
                 text=get_new_round_message(event.count_to_kick)
