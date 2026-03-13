@@ -2,7 +2,7 @@ from services.game_service.app.domain.dto import CharacterWithoutAttrs
 from services.game_service.app.domain.uow import UnitOfWork
 from services.game_service.app.infrastructure.messaging.rabbitmq import GamePublisher
 from shared.src.enums import AttributeCategory
-from shared.src.events import AttributeRevealed, PlayerJoined
+from shared.src.events import AttributeRevealed, PlayerJoined, User
 
 
 class CharacterService:
@@ -23,8 +23,10 @@ class CharacterService:
         await self.publisher.publish(
             PlayerJoined(
                 game_id=game_id,
-                name=name,
-                user_id=user_id
+                user=User(
+                    user_id=user_id,
+                    name=name
+                )
             )
         )
 
@@ -49,8 +51,10 @@ class CharacterService:
         await self.publisher.publish(
             AttributeRevealed(
                 game_id=game_id,
-                user_id=user_id,
-                name=char.username,
+                user=User(
+                    user_id=user_id,
+                    name=char.username
+                ),
                 value=value,
                 is_all_revealed=is_all_revealed,
                 category=attribute

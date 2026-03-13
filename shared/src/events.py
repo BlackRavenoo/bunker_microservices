@@ -50,6 +50,10 @@ class VoteDetail(Struct):
     name: str
     votes_count: int
 
+class User(Struct):
+    user_id: int
+    name: str
+
 # Events
 
 class GameEvent(Struct):
@@ -58,8 +62,7 @@ class GameEvent(Struct):
 
 class PlayerJoined(GameEvent, kw_only=True, omit_defaults=True):
     event_type: str = PLAYER_JOINED
-    name: str
-    user_id: str
+    user: User
 
 class GameStarted(GameEvent, kw_only=True, omit_defaults=True):
     event_type: str = GAME_STARTED
@@ -67,8 +70,7 @@ class GameStarted(GameEvent, kw_only=True, omit_defaults=True):
 
 class AttributeRevealed[T](GameEvent, kw_only=True, omit_defaults=True):
     event_type: str = ATTRIBUTE_REVEALED
-    user_id: str
-    name: str
+    user: User
     value: T
     is_all_revealed: bool
     category: AttributeCategory
@@ -79,10 +81,8 @@ class VotingStarted(GameEvent, kw_only=True, omit_defaults=True):
 
 class PlayerVoted(GameEvent, kw_only=True, omit_defaults=True):
     event_type: str = PLAYER_VOTED
-    user_id: str
-    user_name: str
-    target_id: str
-    target_name: str
+    user: User
+    target: User
     vote_details: list[VoteDetail]
 
 class VotingEnded(GameEvent, kw_only=True, omit_defaults=True):

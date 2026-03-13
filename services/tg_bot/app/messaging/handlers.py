@@ -25,8 +25,8 @@ def register_event_handlers(broker: RabbitBroker, bot: Bot, game_service: GameSe
         chat_id = game.chat_id
 
         name = get_formatted_name(
-            user_id=event.user_id,
-            name=event.name
+            user_id=event.user.user_id,
+            name=event.user.name
         )
 
         await bot.send_message(
@@ -98,8 +98,8 @@ def register_event_handlers(broker: RabbitBroker, bot: Bot, game_service: GameSe
         chat_id = game.chat_id
 
         name = get_formatted_name(
-            user_id=event.user_id,
-            name=event.name
+            user_id=event.user.user_id,
+            name=event.user.name
         )
 
         category_str = get_category_str(event.category) 
