@@ -1,18 +1,26 @@
 from msgspec import Struct
 
-from shared.src.enums import AttributeCategory, Gender, VotingResult
+from shared.src.enums import ActionTarget, ActionType, ActionValue, AttributeCategory, Gender, VotingResult
 
 PLAYER_JOINED = "player.joined"
 GAME_STARTED = "game.started"
-ATTRIBUTE_REVEALED = "attribute.revealed"
+ATTRIBUTE_REVEALED = "player.revealed"
 VOTING_STARTED = "voting.started"
 PLAYER_VOTED = "player.voted"
 VOTING_ENDED = "voting.ended"
 ROUND_STARTED = "round.started"
+ACTION_CARD_USED = "player.card_used"
 
 class Attribute[T](Struct):
     value: T
     is_revealed: bool
+
+class ActionCard(Struct):
+    id: int
+    action: ActionType
+    value: ActionValue
+    target: ActionTarget
+    info: str
 
 class Character(Struct):
     user_id: str
@@ -25,7 +33,7 @@ class Character(Struct):
     phobia: Attribute[str]
     item: Attribute[str]
     facts: list[Attribute[str]]
-    # actions: list[Action]
+    actions: list[ActionCard]
 
     username: str
     
@@ -51,7 +59,7 @@ class VoteDetail(Struct):
     votes_count: int
 
 class User(Struct):
-    user_id: int
+    user_id: str
     name: str
 
 # Events
@@ -96,3 +104,9 @@ class VotingEnded(GameEvent, kw_only=True, omit_defaults=True):
 class NewRoundStarted(GameEvent, kw_only=True, omit_defaults=True):
     event_type: str = ROUND_STARTED
     count_to_kick: int
+
+class ActionCardUsed(GameEvent, kw_only=True, omit_defaults=True):
+    event_type: str = ACTION_CARD_USED
+    user: User
+    target: User
+    action_card: ActionCard

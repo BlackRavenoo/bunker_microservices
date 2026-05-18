@@ -53,6 +53,23 @@ class ActionValue(Enum):
     CATASTROPHE = "catastrophe"
     TEXT = "text"
 
+    def into_category(self) -> AttributeCategory:
+        match self:
+            case ActionValue.BIOLOGY:
+                return AttributeCategory.BIOLOGY
+            case ActionValue.HEALTH:
+                return AttributeCategory.HEALTH
+            case ActionValue.PROFESSION:
+                return AttributeCategory.PROFESSION
+            case ActionValue.HOBBY:
+                return AttributeCategory.HOBBY
+            case ActionValue.PHOBIA:
+                return AttributeCategory.PHOBIA
+            case ActionValue.ITEM:
+                return AttributeCategory.ITEM
+            case _:
+                raise ValueError(f"ActionValue {self} has no corresponding AttributeCategory")
+
 class ActionTarget(Enum):
     ANY = 0
     ALL = 1

@@ -45,6 +45,9 @@ class UserIsNotPlayer(InvalidOperation):
 class InvalidVotingStateError(AppException):
     pass
 
+class InvalidAction(InvalidOperation):
+    pass
+
 def build_error_code_map():
     result = {}
     queue = [AppException]
