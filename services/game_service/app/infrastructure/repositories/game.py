@@ -55,14 +55,20 @@ class SQLGameRepository(GameRepository):
 
         items_subq = (
             select(BunkerElement.id)
-            .where(BunkerElement.category == BunkerElementType.ITEM)
+            .where(
+                BunkerElement.category == BunkerElementType.ITEM,
+                BunkerElement.is_active    
+            )
             .order_by(func.random())
             .limit(2)
         )
 
         rooms_subq = (
             select(BunkerElement.id)
-            .where(BunkerElement.category == BunkerElementType.ROOM)
+            .where(
+                BunkerElement.category == BunkerElementType.ROOM,
+                BunkerElement.is_active
+            )
             .order_by(func.random())
             .limit(2)
         )
@@ -219,5 +225,24 @@ class SQLGameRepository(GameRepository):
                 Game.id == game_id
             ).values(
                 **set_fields
+            )
+        )
+
+    async def add_bunker_elements(self, game_id, elements):
+        subqueries = []
+        for element_type, count in elements.items():
+            subq = (
+                select(BunkerElement.id)
+                .where(BunkerElement.category == element_type, BunkerElement.is_active)
+                .order_by(func.random())
+                .limit(count)
+            )
+            subqueries.append(subq)
+
+        combined = union_all(*subqueries).subquery()
+        await self.session.execute(
+            insert(GameBunkerElement).from_select(
+                ["game_id", "bunker_element_id"],
+                select(literal(game_id), combined.c.id)
             )
         )

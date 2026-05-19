@@ -1,7 +1,8 @@
 from enum import Enum
-from pydantic import BaseModel
+from typing import Any, Self
+from pydantic import BaseModel, model_validator
 
-from shared.src.enums import CharacterStatus, GameStatus, Gender
+from shared.src.enums import AttributeCategory, CharacterStatus, GameStatus, Gender
 
 class NumericOperation(Enum):
     SET = "set"
@@ -43,3 +44,28 @@ class CharacterBatchUpdateDTO(BaseModel):
     id: int
     status: CharacterStatus | None = None
     attributes: CharacterAttributes | None = None
+
+category_to_type = {
+    AttributeCategory.BIOLOGY: tuple,
+    AttributeCategory.HEALTH: str,
+    AttributeCategory.PROFESSION: str,
+    AttributeCategory.HOBBY: str,
+    AttributeCategory.PHOBIA: str,
+    AttributeCategory.FACT: list,
+    AttributeCategory.ITEM: str,
+}
+
+class BatchUpdateAttributesDTO(BaseModel):
+    id: int
+    attributes: dict[AttributeCategory, Any]
+
+    @model_validator(mode="after")
+    def validate_values(self) -> Self:
+        for category, value in self.attributes.items():
+            expected_type = category_to_type[category]
+            if not isinstance(value, expected_type):
+                raise ValueError(
+                    f"Category {category}: expected {expected_type}, got {type(value)}"
+                )
+        
+        return self

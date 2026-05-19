@@ -1,6 +1,7 @@
 from typing import Self
 from services.game_service.app.infrastructure.db.session import async_session_maker
 from services.game_service.app.domain.uow import UnitOfWork
+from services.game_service.app.infrastructure.repositories.action_card import SQLActionCardRepository
 from services.game_service.app.infrastructure.repositories.attribute import SQLAttributeRepository
 from services.game_service.app.infrastructure.repositories.character import SQLCharacterRepository
 from services.game_service.app.infrastructure.repositories.game import SQLGameRepository
@@ -16,6 +17,7 @@ class SqlAlchemyUnitOfWork(UnitOfWork):
         self.games = SQLGameRepository(self.session)
         self.characters = SQLCharacterRepository(self.session)
         self.attributes = SQLAttributeRepository(self.session)
+        self.action_cards = SQLActionCardRepository(self.session)
 
         return self
 

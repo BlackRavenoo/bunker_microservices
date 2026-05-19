@@ -2,6 +2,7 @@ from abc import abstractmethod, ABC
 
 from services.game_service.app.domain.dto import VotingMetadata, VotingParticipant
 from services.game_service.app.domain.dto.update import GameUpdateDTO
+from shared.src.enums import BunkerElementType
 
 class GameRepository(ABC):
     @abstractmethod
@@ -34,4 +35,8 @@ class GameRepository(ABC):
 
     @abstractmethod
     async def update_game(self, game_id: str, update_data: GameUpdateDTO):
+        pass
+
+    @abstractmethod
+    async def add_bunker_elements(self, game_id: str, elements: dict[BunkerElementType, int]):
         pass

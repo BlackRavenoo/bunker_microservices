@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from shared.src.enums import Gender, VotingResult
+from shared.src.enums import ActionTarget, ActionType, ActionValue, BunkerElementType, Gender, VotingResult
 from shared.src.events import Character, VoteDetail
 
 class CharacterWithoutAttrs(BaseModel):
@@ -14,6 +14,13 @@ class UserAttributeDTO[T](BaseModel):
     value: T
     is_revealed: bool
 
+class ActionCardDTO(BaseModel):
+    id: int
+    action: ActionType
+    value: ActionValue
+    target: ActionTarget
+    info: str | None
+
 class CharacterDTO(BaseModel):
     id: int
     user_id: str
@@ -26,6 +33,7 @@ class CharacterDTO(BaseModel):
     phobia: UserAttributeDTO[str]
     item: UserAttributeDTO[str]
     facts: list[UserAttributeDTO[str]]
+    actions: list[ActionCardDTO]
 
     def into_shared(self) -> Character:
         return Character(**self.model_dump(exclude={'id'}))
@@ -51,3 +59,8 @@ class VotingDistribution(BaseModel):
     result: VotingResult
     candidates_to_kick: list[VotingParticipant]
     remaining_members: list[VotingParticipant]
+
+class BunkerElementDTO(BaseModel):
+    id: int
+    category: BunkerElementType
+    value: str

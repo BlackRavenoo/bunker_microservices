@@ -2,7 +2,7 @@ from abc import abstractmethod, ABC
 from typing import Any
 
 from services.game_service.app.domain.dto import CharacterDTO, CharacterWithoutAttrs
-from services.game_service.app.domain.dto.update import CharacterBatchUpdateDTO, CharacterUpdateDTO
+from services.game_service.app.domain.dto.update import BatchUpdateAttributesDTO, CharacterBatchUpdateDTO, CharacterUpdateDTO
 from shared.src.enums import AttributeCategory
 
 class CharacterRepository(ABC):
@@ -44,4 +44,16 @@ class CharacterRepository(ABC):
 
     @abstractmethod
     async def vote(self, game_id: str, user_id: str, target_id: int):
+        pass
+
+    @abstractmethod
+    async def generate_new_random_attribute(self, game_id: str, user_id: str, category: AttributeCategory):
+        pass
+
+    @abstractmethod
+    async def swap_attributes(self, user_id: str, target_user_id: str, game_id: str, category: AttributeCategory):
+        pass
+
+    @abstractmethod
+    async def batch_update_attributes(self, updates: list[BatchUpdateAttributesDTO]):
         pass

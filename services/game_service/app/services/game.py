@@ -1,4 +1,5 @@
 import random
+from services.game_service.app.domain.dto import ActionCardDTO
 from services.game_service.app.domain.dto.update import CharacterAttributes, CharacterBatchUpdateDTO
 from services.game_service.app.domain.uow import UnitOfWork
 from services.game_service.app.infrastructure.messaging.rabbitmq import GamePublisher
@@ -15,23 +16,20 @@ class GameService:
         self,
         character_ids: list[int],
         attrs_by_category: dict[AttributeCategory, list],
-        categories: list[tuple[AttributeCategory, int]]
+        action_cards: list[ActionCardDTO]
     ) -> list[dict]:
         characters_updates = []
         for i, character_id in enumerate(character_ids):
             attributes = {}
             
-            for category, count in categories:
-                attrs = attrs_by_category[category]
-                
+            for category, attrs in attrs_by_category.items():
                 if category == AttributeCategory.FACT:
                     attributes["facts"] = [
                         {"value": attrs[i * 2], "is_revealed": False},
                         {"value": attrs[i * 2 + 1], "is_revealed": False}
                     ]
                 else:
-                    attr_name = category.value
-                    attributes[attr_name] = {
+                    attributes[category] = {
                         "value": attrs[i],
                         "is_revealed": False
                     }
@@ -78,10 +76,12 @@ class GameService:
                 char_count=char_count
             )
 
+            cards = await uow.action_cards.get_random_action_cards(char_count)
+
             characters_updates = self._build_character_attributes(
                 character_ids,
                 attrs_by_category,
-                categories
+                cards
             )
 
             await uow.characters.update_characters(
@@ -104,4 +104,3 @@ class GameService:
                 bunker=game_result["bunker"]
             )
         ))
-            

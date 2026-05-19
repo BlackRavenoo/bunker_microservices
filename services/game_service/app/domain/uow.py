@@ -1,15 +1,17 @@
 from abc import ABC, abstractmethod
-from typing import Self, Type
+from typing import Self
 
+from services.game_service.app.domain.repositories.action_card import ActionCardRepository
 from services.game_service.app.domain.repositories.attribute import AttributeRepository
 from services.game_service.app.domain.repositories.character import CharacterRepository
 from services.game_service.app.domain.repositories.game import GameRepository
 
 
 class UnitOfWork(ABC):
-    games: Type[GameRepository]
-    characters: Type[CharacterRepository]
-    attributes: Type[AttributeRepository]
+    games: GameRepository
+    characters: CharacterRepository
+    attributes: AttributeRepository
+    action_cards: ActionCardRepository
     
     @abstractmethod
     def __init__(self):

@@ -4,7 +4,7 @@ from services.game_service.app.domain.services.voting import calculate_voting_re
 from services.game_service.app.domain.uow import UnitOfWork
 from services.game_service.app.infrastructure.messaging.rabbitmq import GamePublisher
 from shared.src.enums import CharacterStatus, GameStatus, VotingResult
-from shared.src.events import NewRoundStarted, PlayerVoted, VotingEnded, VotingStarted
+from shared.src.events import NewRoundStarted, PlayerVoted, User, VotingEnded, VotingStarted
 from shared.src.exceptions import InvalidVotingStateError, UserAlreadyKicked, UserAlreadyVoted, UserIsNotPlayer, VotingTargetNotFound
 
 class VotingService:
@@ -173,10 +173,14 @@ class VotingService:
 
         await self.publisher.publish(PlayerVoted(
             game_id=game_id,
-            user_id=user_id,
-            user_name=user.username,
-            target_id=target_user_id,
-            target_name=target.username,
+            user=User(
+                user_id=user_id,
+                name=user.username
+            ),
+            target=User(
+                user_id=target_user_id,
+                name=target.username
+            ),
             vote_details=[p.into_shared() for p in voting_participants]
         ))
 

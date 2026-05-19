@@ -1,13 +1,15 @@
 from typing import Any
-from sqlalchemy import cast, func, insert, select, update, case, not_
+from sqlalchemy import cast, func, insert, select, update, case, not_, text
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from msgspec.json import encode
+from sqlalchemy.orm import joinedload
 
-from services.game_service.app.domain.dto import UserAttributeDTO, CharacterDTO, CharacterWithoutAttrs
-from services.game_service.app.domain.dto.update import NullableFieldUpdate
+from services.game_service.app.domain.dto import ActionCardDTO, UserAttributeDTO, CharacterDTO, CharacterWithoutAttrs
+from services.game_service.app.domain.dto.update import BatchUpdateAttributesDTO, NullableFieldUpdate
 from services.game_service.app.domain.repositories.character import CharacterRepository
-from services.game_service.app.infrastructure.db.models import Character
+from services.game_service.app.infrastructure.db.models import Attribute, Character
 from shared.src.enums import AttributeCategory, CharacterStatus
 from shared.src.exceptions import AttributeAlreadyRevealed, EntityAlreadyExists, EntityNotFound, NoRevealRequired, UnexpectedException
 
@@ -16,31 +18,25 @@ class SQLCharacterRepository(CharacterRepository):
         self.session = session
 
     async def _fetch_characters(self, game_id: str, exсlude_kicked: bool = False) -> list[CharacterDTO]:
-        characters_query = select(
-            Character.id,
-            Character.user_id,
-            Character.name,
-            (Character.status == CharacterStatus.Kicked).label('is_kicked'),
-            Character.attributes
-        )\
-        .select_from(Character)\
-        .where(Character.game_id == game_id)
+        characters_query = select(Character)\
+            .where(Character.game_id == game_id)\
+            .options(joinedload(Character.action_cards))
 
         if exсlude_kicked:
             characters_query = characters_query.where(
                 Character.status != CharacterStatus.Kicked
             )
 
-        result = await self.session.execute(characters_query)
+        result = await self.session.scalars(characters_query)
 
-        characters_rows = result.all()
+        characters_rows = result.unique().all()
 
         characters_data = []
         for row in characters_rows:
             char = CharacterDTO(
                 id=row.id,
                 user_id=row.user_id,
-                is_kicked=row.is_kicked,
+                is_kicked=row.status == CharacterStatus.Kicked,
                 username=row.name,
                 biology=UserAttributeDTO(**row.attributes["biology"]),
                 health=UserAttributeDTO(**row.attributes["health"]),
@@ -49,6 +45,11 @@ class SQLCharacterRepository(CharacterRepository):
                 phobia=UserAttributeDTO(**row.attributes["phobia"]),
                 item=UserAttributeDTO(**row.attributes["item"]),
                 facts=[UserAttributeDTO(**fact) for fact in row.attributes["facts"]],
+                actions=[
+                    ActionCardDTO(**card)
+                    for card
+                    in row.action_cards
+                ]
             )
 
             characters_data.append(char)
@@ -217,3 +218,79 @@ class SQLCharacterRepository(CharacterRepository):
         )
 
         await self.session.execute(query)
+
+    async def generate_new_random_attribute(self, game_id, user_id, category):
+        subquery = select(
+            Attribute.value
+        ).where(
+            Attribute.category == category
+        ).order_by(
+            func.random()
+        ).limit(1).subquery()
+        
+        query = update(Character).where(
+            Character.game_id == game_id,
+            Character.user_id == user_id,
+        ).values(
+            attributes=func.jsonb_set(
+                Character.attributes,
+                f"{{{category.value}, value}}",
+                cast(subquery, JSONB)
+            )
+        )
+
+        await self.session.execute(
+            query
+        )
+
+    async def swap_attributes(self, user_id, target_user_id, game_id, category):
+        target_subquery = (
+            select(Character.attributes[category.value])
+            .where(Character.user_id == target_user_id)
+            .scalar_subquery()
+        )
+        
+        user_subquery = (
+            select(Character.attributes[category.value])
+            .where(Character.user_id == user_id)
+            .scalar_subquery()
+        )
+
+        query = (
+            update(Character)
+            .where(
+                Character.user_id.in_([user_id, target_user_id]),
+                game_id == game_id
+            )
+            .values(
+                attributes=func.jsonb_set(
+                    Character.attributes,
+                    f"{{{category.value}}}",
+                    cast(
+                        case(
+                            (Character.user_id == user_id, target_subquery),
+                            (Character.user_id == target_user_id, user_subquery),
+                        ),
+                        JSONB
+                    ),
+                )
+            )
+        )
+
+        await self.session.execute(query)
+
+    async def batch_update_attributes(self, updates: list[BatchUpdateAttributesDTO]):
+        self.session.execute(
+            text("""
+                UPDATE users u
+                SET attributes = u.attributes || new_attrs::JSONB
+                FROM (
+                    SELECT 
+                        (value->>'id')::int AS user_id
+                        value -> attributes AS new_attrs
+                    FROM jsonb_array_elements(:data::jsonb)
+                ) v
+                WHERE u.id = v.user_id
+            """),
+            {"data": encode(updates)}
+        )

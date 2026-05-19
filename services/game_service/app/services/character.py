@@ -1,8 +1,10 @@
+from services.game_service.app.domain.actions.factory import create_action
 from services.game_service.app.domain.dto import CharacterWithoutAttrs
 from services.game_service.app.domain.uow import UnitOfWork
 from services.game_service.app.infrastructure.messaging.rabbitmq import GamePublisher
 from shared.src.enums import AttributeCategory
-from shared.src.events import AttributeRevealed, PlayerJoined, User
+from shared.src.events import ActionCardUsed, AttributeRevealed, PlayerJoined, User
+from shared.src.exceptions import InvalidAction
 
 
 class CharacterService:
@@ -58,5 +60,54 @@ class CharacterService:
                 value=value,
                 is_all_revealed=is_all_revealed,
                 category=attribute
+            )
+        )
+
+    async def use_action_card(
+        self,
+        game_id: str,
+        user_id: str,
+        card_id: int,
+        target_user_id: str | None
+    ):
+        async with self.uow as uow:
+            card = await uow.action_cards.get_card(
+                id = card_id
+            )
+
+            action = create_action(
+                card=card,
+                game_id=game_id,
+                user_id=user_id,
+                target_user_id=target_user_id
+            )
+
+            if not action.is_valid():
+                raise InvalidAction()
+
+            await action.execute(uow)
+
+            users = await uow.characters.get_characters_without_attrs(
+                game_id=game_id,
+                user_ids=[user_id, target_user_id]
+            )
+
+            await uow.commit()
+
+        users = [
+            User(
+                user_id=user.user_id,
+                name=user.username
+            ) if user else None
+            for user
+            in users
+        ]
+
+        await self.publisher.publish(
+            ActionCardUsed(
+                game_id=game_id,
+                user=users[0],
+                target=users[1],
+                action_card=card
             )
         )
